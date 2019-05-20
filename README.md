@@ -1,20 +1,19 @@
 # defun
 
-A macro to define clojure functions with pattern matching just as erlang or elixir. It supports both clojure and clojurescript.
+*A Clojure macro supporting functions with pattern matching heads a la LFE*
 
-## News
+## About
 
-* **Since 0.3.0-RC1, `defun` namespace is renamed to `defun.core` .**
+The macros defined by this project allow one to write code a little more
+closely to LFE (a Lisp that runs and inter-operates with Erlang and other BEAM
+languages).
+
+Note that this repo was originally cloned from [here](https://github.com/killme2008/defun).
+
 
 ## Usage
 
-Dependency in leiningen:
-
-``` clj
-    [defun "0.3.0-RC1"]
-```
-
-### Basic usage
+### Requiring
 
 Require `defun.core` in clojure:
 
@@ -30,158 +29,34 @@ Or `refer-macros` in clojurescript:
 (enable-console-print!)
 ```
 
-**Since 0.3.0-RC, `defun` namespace is renamed to `defun.core` .**
+### Patterns
 
-Try to define function just like `defn`:
-
-``` clj
-(defun hello
-   "hello world"
-   [name] (str "hello," name))
-(hello "defun")
-;; "hello,defun"
-```
-
-Supports variadic arguments, doc, metadata etc. as `defun` too. No supprises?
-
-The fun thing is coming, let's say hi to people:
-
-``` clj
+```clj
 (defun say-hi
-  ([:dennis] "Hi,good morning, dennis.")
-  ([:catty] "Hi, catty, what time is it?")
-  ([:green] "Hi,green, what a good day!")
-  ([other] (str "Say hi to " other)))
+  ([:dennis] "Dennis, there's some lovely filth down here!")
+  ([:sir-robin] "That's ... that's enough music for now lads, there's dirty work afoot.")
+  ([:zoot] "No, I am Zoot's identical twin sister, Dingo.")
+  ([other] (str  other ", look at the BOOOOONES!")))
 ```
 
 Then calling `say-hi` with different names:
 
-``` clj
+```clj
 (say-hi :dennis)
-;;  "Hi,good morning, dennis."
-(say-hi :catty)
-;;  "Hi, catty, what time is it?"
-(say-hi :green)
-;;  "Hi,green, what a good day!"
-(say-hi "someone")
-;;  "Say hi to someone"
+;;  "Dennis, there's some lovely filth down here!"
+(say-hi :sir-robin)
+;;  "That's ... that's enough music for now lads, there's dirty work afoot."
+(say-hi :zoot)
+;;  "No, I am Zoot's identical twin sister, Dingo."
+(say-hi "Tim")
+;;  "Tim, look at the BOOOOONES!"
 ```
 
-We define functions just like Erlang's function with parameters pattern match (thanks to [core.match](https://github.com/clojure/core.match)), we don't need `if,cond,case` any more, that's cool!
+We can use all patterns that supported by [core.match](https://github.com/clojure/core.match/wiki/Basic-usage).
 
-### Recursion
+For example, matching literals:
 
-Let's move on, what about define a recursive function? That's easy too:
-
-``` clj
-(defun count-down
-  ([0] (println "Reach zero!"))
-  ([n] (println n)
-     (recur (dec n))))
-```
-
-Invoke it:
-
-``` clj
-(count-down 5)
-;;5
-;;4
-;;3
-;;2
-;;1
-;;Reach zero!
-nil
-```
-
-An accumulator from zero to number `n`:
-
-``` clj
-    (defun accum
-      ([0 ret] ret)
-      ([n ret] (recur (dec n) (+ n ret)))
-      ([n] (recur n 0)))
-
-	 (accum 100)
-	 ;;5050
-```
-
-A fibonacci function:
-
-``` clj
-(defun fib
-    ([0] 0)
-    ([1] 1)
-    ([n] (+ (fib (- n 1)) (fib (- n 2)))))
-```
-
-Output:
-
-``` clj
-(fib 10)
-;; 55
-```
-
-Of course it's not tail recursive, but it's really cool, isn't it?
-
-### Guards
-
-Added a guard function to parameters:
-
-``` clj
-(defun funny
-  ([(N :guard #(= 42 %))] true)
-  ([_] false))
-
-(funny 42)
-;;  true
-(funny 43)
-;; false
-```
-
-Another function to detect if longitude and latitude values are both valid:
-
-``` clj
-(defun valid-geopoint?
-    ([(_ :guard #(and (> % -180) (< % 180)))
-      (_ :guard #(and (> % -90) (< % 90)))] true)
-    ([_ _] false))
-
-(valid-geopoint? 30 30)
-;; true
-(valid-geopoint? -181 30)
-;; false
-```
-
-### Private defun
-
-Of course, you can use `defun-` to define a function that is private just as `defn-`
-
-### More Patterns
-
-In fact ,the above `say-hi` function will be expanded to be:
-
-``` clj
-(defn
- say-hi
- {:arglists '([& args])}
- [& args#]
- (clojure.core.match/match
-  [(vec args#)]
-  [[:dennis]]
-  (do "Hi,good morning, dennis.")
-  [[:catty]]
-  (do "Hi, catty, what time is it?")
-  [[:green]]
-  (do "Hi,green, what a good day!")
-  [[other]]
-  (do (str "Say hi to " other))))
-```
-
-The argument vector is in fact a pattern in core.match, so we can use all patterns that supported by [core.match](https://github.com/clojure/core.match/wiki/Basic-usage).
-
-For example, matching literals
-
-``` clj
+```clj
 (defun test1
     ([true false] 1)
     ([true true] 2)
@@ -196,7 +71,7 @@ For example, matching literals
 
 Matching sequence:
 
-``` clj
+```clj
 (defun test2
     ([([1] :seq)] :a0)
     ([([1 2] :seq)] :a1)
@@ -208,7 +83,7 @@ Matching sequence:
 
 Matching vector:
 
-``` clj
+```clj
 (defun test3
     ([[_ _ 2]] :a0)
     ([[1 1 3]] :a1)
@@ -218,9 +93,105 @@ Matching vector:
 ;; :a2
 ```
 
-Rest Pattern, Map Pattern, Or Pattern etc.
 
-I don't want to copy the [core.match's wiki](https://github.com/clojure/core.match/wiki/Basic-usage),please visit it by yourself.
+### Recursion
+
+Let's move on, what about define a recursive function? That's easy too:
+
+```clj
+(defun count-down
+  ([0] (println "Reach zero!"))
+  ([n] (println n)
+     (recur (dec n))))
+```
+
+Invoke it:
+
+```clj
+(count-down 5)
+;;5
+;;4
+;;3
+;;2
+;;1
+;;Reach zero!
+nil
+```
+
+An accumulator from zero to number `n`:
+
+```clj
+(defun accum
+  ([0 ret] ret)
+  ([n ret] (recur (dec n) (+ n ret)))
+  ([n] (recur n 0)))
+
+(accum 100)
+;;5050
+```
+
+A fibonacci function:
+
+```clj
+(defun fib
+    ([0] 0)
+    ([1] 1)
+    ([n] (+ (fib (- n 1)) (fib (- n 2)))))
+```
+
+Output:
+
+```clj
+(fib 10)
+;; 55
+```
+
+
+### Guards
+
+Added a guard function to parameters:
+
+```clj
+(defun funny
+  ([(N :guard #(= 42 %))] true)
+  ([_] false))
+
+(funny 42)
+;;  true
+(funny 43)
+;; false
+```
+
+Another function to detect if longitude and latitude values are both valid:
+
+```clj
+(defun valid-geopoint?
+    ([(_ :guard #(and (> % -180) (< % 180)))
+      (_ :guard #(and (> % -90) (< % 90)))] true)
+    ([_ _] false))
+
+(valid-geopoint? 30 30)
+;; true
+(valid-geopoint? -181 30)
+;; false
+```
+
+### Compatibility with defn
+
+Try to define function just like `defn`:
+
+```clj
+(defun hello
+   "hello world"
+   [name] (str "hello," name))
+(hello "defun")
+;; "hello,defun"
+```
+
+`defun` also supports variadic arguments, doc, metadata etc.
+
+Additionally, a `defun-` is provided for creating private functions a la `defn-`.
+
 
 ### fun and letfun
 
@@ -242,12 +213,11 @@ Since 0.2.0, there are two new macros: `fun` and `letfun`, just like `clojure.co
 ```
 
 
-
 ## Criterium benchmarking
 
 Uses the above function `accum` compared with a normal clojure function:
 
-``` clj
+```clj
 (require '[criterium.core :refer [bench]])
 
 (defn accum-defn
@@ -278,6 +248,7 @@ Uses the above function `accum` compared with a normal clojure function:
 
 accum-defn is much faster than accum-defun. Pattern matching does have a tradeoff.
 
+
 ## Contributors
 
 Thanks .
@@ -285,6 +256,7 @@ Thanks .
 - [kgann](https://github.com/kgann)
 - [danielcompton](https://github.com/danielcompton)
 - [Sander Dijkhuis](https://github.com/sander)
+
 
 ## License
 
