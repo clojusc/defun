@@ -1,5 +1,6 @@
 language: clojure
 script:
+  - lein check-vers
   - lein ubercompile
   - lein test
   - lein uberjar
