@@ -1,0 +1,11 @@
+language: clojure
+script:
+  - lein ubercompile
+  - lein test
+  - lein uberjar
+jdk:
+  - oraclejdk8
+  - oraclejdk11
+notifications:
+  email:
+    - oubiwann@gmail.com
