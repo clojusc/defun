@@ -20,11 +20,26 @@
       :repl-options {
         :init-ns defun.repl
         :prompt ~get-prompt}}
+    :lint {
+      :source-paths ^:replace ["src"]
+      :test-paths ^:replace []
+      :plugins [
+        [jonase/eastwood "0.3.5"]
+        [lein-ancient "0.6.15"]
+        [lein-kibit "0.1.6"]]}
     :ubercompile {
       :aot :all}
     :test {
       :plugins [
         [lein-ltest "0.3.0"]]}}
   :aliases {
+    "check-vers" ["with-profile" "+lint" "ancient" "check" ":all"]
+    "check-jars" ["with-profile" "+lint" "do"
+      ["deps" ":tree"]
+      ["deps" ":plugin-tree"]]
+    "check-deps" ["do"
+      ["check-jars"]
+      ["check-vers"]]
+    "kibit" ["with-profile" "+lint" "kibit"]
     "ubercompile" ["with-profile" "+ubercompile" "compile"]
     "test" ["with-profile" "+test" "ltest"]})
