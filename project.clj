@@ -1,3 +1,9 @@
+(defn get-prompt
+  [ns]
+  (str "\u001B[35m[\u001B[34m"
+       ns
+       "\u001B[35m]\u001B[33m =>\u001B[m "))
+
 (defproject clojusc/defun "0.4.0-SNAPSHOT"
   :description "A Clojure macro supporting functions with pattern matching heads a la LFE"
   :url "https://github.com/clojusc/defun"
@@ -9,6 +15,11 @@
     [org.clojure/core.match "0.3.0-alpha4"]
     [org.clojure/tools.macro "0.1.2"]]
   :profiles {
+    :dev {
+      :source-paths ["dev-resources/src"]
+      :repl-options {
+        :init-ns defun.repl
+        :prompt ~get-prompt}}
     :ubercompile {
       :aot :all}
     :test {
