@@ -1,5 +1,11 @@
 # defun
 
+[![Build Status][travis-badge]][travis]
+[![Dependencies Status][deps-badge]][deps]
+[![Clojars Project][clojars-badge]][clojars]
+[![Tag][tag-badge]][tag]
+[![Clojure version][clojure-v]](project.clj)
+
 *A Clojure macro supporting functions with pattern matching heads a la LFE*
 
 ## About
@@ -246,16 +252,8 @@ Uses the above function `accum` compared with a normal clojure function:
 ;;                   Overhead used : 1.648269 ns
 ```
 
-accum-defn is much faster than accum-defun. Pattern matching does have a tradeoff.
-
-
-## Contributors
-
-Thanks .
-
-- [kgann](https://github.com/kgann)
-- [danielcompton](https://github.com/danielcompton)
-- [Sander Dijkhuis](https://github.com/sander)
+`accum-defn` is much faster than `accum-defun` ... pattern-matching in Clojure
+does have a cost; trade-offs should be analyzed before using.
 
 
 ## License
@@ -265,3 +263,16 @@ Copyright © 2014 [Dennis Zhuang](mailto:killme2008@gmail.com)
 Distributed under the Eclipse Public License either version 1.0 or (at
 
 your option) any later version.
+
+
+<!-- Named page links below: /-->
+
+[travis]: https://travis-ci.org/clojusc/defun
+[travis-badge]: https://travis-ci.org/clojusc/defun.png?branch=master
+[deps]: http://jarkeeper.com/clojusc/defun
+[deps-badge]: http://jarkeeper.com/clojusc/defun/status.svg
+[tag-badge]: https://img.shields.io/github/tag/clojusc/defun.svg
+[tag]: https://github.com/clojusc/defun/tags
+[clojure-v]: https://img.shields.io/badge/clojure-1.10.0-blue.svg
+[clojars]: https://clojars.org/clojusc/defun
+[clojars-badge]: https://img.shields.io/clojars/v/clojusc/defun.svg
