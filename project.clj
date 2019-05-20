@@ -1,4 +1,4 @@
-(defproject clojusc/defun "0.3.0"
+(defproject clojusc/defun "0.4.0-SNAPSHOT"
   :description "A Clojure macro supporting functions with pattern matching heads a la LFE"
   :url "https://github.com/clojusc/defun"
   :license {
