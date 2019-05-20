@@ -1,13 +1,13 @@
-(ns
-    ^{:author "dennis <killme2008@gmail.com>"
-      :doc "A macro to define clojure functions with parameter pattern matching
-            just like erlang or elixir based on core.match. Please see
-            https://github.com/killme2008/defun"}
+(ns ^{:author "dennis <killme2008@gmail.com>"
+      :doc "A macro to define Clojure functions with parameter pattern matching
+            just like LFE based on `core.match`. Please see
+            https://github.com/clojusc/defun"}
   defun.core
-  (:require #?(:clj [clojure.core.match]
-               :cljs [cljs.core.match :include-macros true])
-            #?@(:clj [[clojure.tools.macro :refer [name-with-attributes]]
-                      [clojure.walk :refer [postwalk]]]))
+  (:require
+    #?(:clj [clojure.core.match]
+       :cljs [cljs.core.match :include-macros true])
+    #?@(:clj [[clojure.tools.macro :refer [name-with-attributes]]
+             [clojure.walk :refer [postwalk]]]))
   #?(:cljs (:require-macros [defun.core :refer [fun letfun defun defun-]])))
 
 #?(:clj
