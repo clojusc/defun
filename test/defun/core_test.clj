@@ -107,23 +107,23 @@
     (is (= "hello world" (-> #'hello meta :doc)))
     (is (= '([name] [a b])) (-> #'hello meta :arglists))))
 
-(deftest test-fun
-  (testing "fun"
-    (is (= 0 ((fun [] 0))))
-    (is (= 0 ((fun test [] 0))))
-    (is (= 0 ((fun ([] 0) ([a] a) ([a b] b)))))
-    (is (= 2 ((fun ([] 0) ([a] a) ([a b] b)) 2)))
-    (is (= 1 ((fun ([] 0) ([a] a) ([a b] b)) 1)))
-    (is (= 2 ((fun ([] 0) ([a] a) ([a b] b)) 1 2)))
-    (is (= :a2 ((fun
+(deftest test-lambda
+  (testing "lambda"
+    (is (= 0 ((lambda [] 0))))
+    (is (= 0 ((lambda test [] 0))))
+    (is (= 0 ((lambda ([] 0) ([a] a) ([a b] b)))))
+    (is (= 2 ((lambda ([] 0) ([a] a) ([a b] b)) 2)))
+    (is (= 1 ((lambda ([] 0) ([a] a) ([a b] b)) 1)))
+    (is (= 2 ((lambda ([] 0) ([a] a) ([a b] b)) 1 2)))
+    (is (= :a2 ((lambda
                  ([[_ _ 2]] :a0)
                  ([[1 1 3]] :a1)
                  ([[1 2 3]] :a2))
                 [1 2 3])))))
 
-(deftest test-letfun
-  (testing "letfun"
-    (letfun [(twice [x]
+(deftest test-flet
+  (testing "flet"
+    (flet [(twice [x]
                     (* x 2))
              (six-times [y]
                         (* (twice y) 3))
@@ -137,7 +137,7 @@
     (is (nil? (resolve 'six-times)))
     (is (nil? (resolve 'twice)))
     (is (nil? (resolve 'accum)))
-    (letfun [(test3 ([[_ _ 2]] :a0)
+    (flet [(test3 ([[_ _ 2]] :a0)
                     ([[1 1 3]] :a1)
                     ([[1 2 3]] :a2))]
             (is (= :a2) (test3 [1 2 3])))))

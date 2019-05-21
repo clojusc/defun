@@ -199,24 +199,29 @@ Try to define function just like `defn`:
 Additionally, a `defun-` is provided for creating private functions a la `defn-`.
 
 
-### fun and letfun
+### lambda and flet
 
-Since 0.2.0, there are two new macros: `fun` and `letfun`, just like `clojure.core/fn` and `clojure.core/letfn`
+There are also two macros `lambda` and `flet` that provide pattern matching,
+but in all other ways are like the `clojure.core/fn` and `clojure.core/letfn`
+functions, respectively.
 
 ``` clojure
-((fun
+((lambda
     ([[_ _ 2]] :a0)
     ([[1 1 3]] :a1)
     ([[1 2 3]] :a2))
   [1 2 3])
 ;; :a2
 
-(letfun [(test3 ([[_ _ 2]] :a0)
+(flet [(test3 ([[_ _ 2]] :a0)
                     ([[1 1 3]] :a1)
                     ([[1 2 3]] :a2))]
   (test3 [1 2 3]))
 ;; :a2
 ```
+
+Note that, if you are coming from LFE, in this project's `lambda` is actually
+like LFE's `match-lambda`.
 
 
 ## Criterium benchmarking
