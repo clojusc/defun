@@ -4,7 +4,7 @@
        ns
        "\u001B[35m]\u001B[33m =>\u001B[m "))
 
-(defproject clojusc/defun "0.4.0-SNAPSHOT"
+(defproject clojusc/defun "0.4.0"
   :description "A Clojure macro supporting functions with pattern matching heads a la LFE"
   :url "https://github.com/clojusc/defun"
   :license {
